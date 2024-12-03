@@ -72,7 +72,7 @@
         <div>
             <h3>POST /api/json</h3>
             <input type="text" id="postJsonFilename" placeholder="Nombre del archivo">
-            <input type="text" id="postJsonContent" placeholder="Contenido">
+            <input type="text" id="postJsonContent" placeholder="Contenido en JSON">
             <button onclick="postJson()">Enviar JSON</button>
             <div id="postJsonResponse"></div>
         </div>
@@ -80,7 +80,7 @@
         <div>
             <h3>PUT /api/json/{filename}</h3>
             <input type="text" id="putJsonFilename" placeholder="Nombre del archivo">
-            <input type="text" id="putJsonContent" placeholder="Nuevo contenido">
+            <input type="text" id="putJsonContent" placeholder="Nuevo contenido en JSON">
             <button onclick="putJson()">Actualizar JSON</button>
             <div id="putJsonResponse"></div>
         </div>
@@ -88,14 +88,52 @@
         <div>
             <h3>DELETE /api/json/{filename}</h3>
             <input type="text" id="deleteJsonFilename" placeholder="Nombre del archivo">
-            <button onclick="deleteJson()">Eliminar JSON</button>
+            <button onclick="deleteJson()">Eliminar archivo JSON</button>
             <div id="deleteJsonResponse"></div>
+        </div>
+
+        <!-- CSV Section -->
+        <div>
+            <h3>GET /api/csv</h3>
+            <button onclick="getCsv()">Obtener CSV</button>
+            <div id="getCsvResponse"></div>
+        </div>
+
+        <div>
+            <h3>GET /api/csv/{filename}</h3>
+            <input type="text" id="getCsvFilename" placeholder="Nombre del archivo">
+            <button onclick="getCsvWithFilename()">Obtener CSV con nombre de archivo</button>
+            <div id="getCsvFilenameResponse"></div>
+        </div>
+
+        <div>
+            <h3>POST /api/csv</h3>
+            <input type="text" id="postCsvFilename" placeholder="Nombre del archivo">
+            <input type="text" id="postCsvContent" placeholder="Contenido en CSV">
+            <button onclick="postCsv()">Enviar CSV</button>
+            <div id="postCsvResponse"></div>
+        </div>
+
+        <div>
+            <h3>PUT /api/csv/{filename}</h3>
+            <input type="text" id="putCsvFilename" placeholder="Nombre del archivo">
+            <input type="text" id="putCsvContent" placeholder="Nuevo contenido en CSV">
+            <button onclick="putCsv()">Actualizar CSV</button>
+            <div id="putCsvResponse"></div>
+        </div>
+
+        <div>
+            <h3>DELETE /api/csv/{filename}</h3>
+            <input type="text" id="deleteCsvFilename" placeholder="Nombre del archivo">
+            <button onclick="deleteCsv()">Eliminar archivo CSV</button>
+            <div id="deleteCsvResponse"></div>
         </div>
     </div>
 
     <script>
         const baseUrl = 'http://localhost:8002/api/hello';
         const jsonBaseUrl = 'http://localhost:8002/api/json';
+        const csvBaseUrl = 'http://localhost:8002/api/csv';
 
         // GET /api/hello
         function getHello() {
@@ -251,6 +289,87 @@
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('deleteJsonResponse').innerText = JSON.stringify(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        // CSV Section Scripts
+        // GET /api/csv
+        function getCsv() {
+            fetch(csvBaseUrl)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('getCsvResponse').innerText = JSON.stringify(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        // GET /api/csv/{filename}
+        function getCsvWithFilename() {
+            const filename = document.getElementById('getCsvFilename').value;
+            fetch(`${csvBaseUrl}/${filename}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('getCsvFilenameResponse').innerText = JSON.stringify(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        // POST /api/csv
+        function postCsv() {
+            const filename = document.getElementById('postCsvFilename').value;
+            const content = document.getElementById('postCsvContent').value;
+            fetch(csvBaseUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ filename: filename, content: content })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('postCsvResponse').innerText = JSON.stringify(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        // PUT /api/csv/{filename}
+        function putCsv() {
+            const filename = document.getElementById('putCsvFilename').value;
+            const content = document.getElementById('putCsvContent').value;
+            fetch(`${csvBaseUrl}/${filename}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ content: content })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('putCsvResponse').innerText = JSON.stringify(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        // DELETE /api/csv/{filename}
+        function deleteCsv() {
+            const filename = document.getElementById('deleteCsvFilename').value;
+            fetch(`${csvBaseUrl}/${filename}`, {
+                method: 'DELETE'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('deleteCsvResponse').innerText = JSON.stringify(data);
                 })
                 .catch(error => {
                     console.error('Error:', error);
